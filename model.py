@@ -27,6 +27,9 @@ class Igra:
     def opremi_z_barvo(self, mesto):
         if self.polje[mesto[0]][mesto[1]]:
             return (mesto[0],mesto[1],self.barva_polja(mesto))
+
+    def je_zasedeno(self, mesto):
+        return bool(self.polje[mesto[0]][mesto[1]])
     
     def sosednja_mesta(self, mesto):
         sosedi = []
@@ -114,8 +117,18 @@ class Igra:
     def poteza(self, barva, mesto, ploscek):
         a,b = copy.deepcopy(self.polje),copy.deepcopy(self.povezave)
         self.backups.append((a,b))
-
+        
+        #validity test
+        if max(mesto) - 1 > self.velikost:
+            return INVALID_MOVE
         polje = self.polje[mesto[0]][mesto[1]]
+        if polje:    
+            if ploscek != 'c':
+                if polje[-1][-1] in ['c', 'w']:
+                    return INVALID_MOVE
+            else:
+                if polje[-1][-1] == 'c':
+                    return INVALID_MOVE
 
         #prekinitev povezave
         if polje and (barva != self.barva_polja(mesto) or ploscek == 'w'):
@@ -133,16 +146,10 @@ class Igra:
             for povezava in seznam_sosednjih_povezav:
                 self.povezave.remove(povezava)
 
-        if max(mesto) - 1 > self.velikost:
-            return INVALID_MOVE
-        if polje:    
-            if polje[-1][-1] in ['c', 'w']:
-                return INVALID_MOVE
+        if all([polje, self.vrsta_ploscka(mesto) == 'w', ploscek == 'c']):
+            polje[-1] = polje[-1][:-1] + 'f'
         polje.append(barva + '_' + ploscek)
         self.update_povezave()
-
 a = Igra(3)
-a.poteza('w',(0,0),'f')
-a.poteza('w',(0,1),'f')
-a.poteza('b',(0,2),'f')
-a.konec_igre()
+a.poteza('w',(0,0),'w')
+a.poteza('w',(0,0),'c')
