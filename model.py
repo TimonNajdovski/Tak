@@ -1,11 +1,11 @@
-import copy
-
 INVALID_MOVE = 'X'
 
 class Igra:
     
     def __init__(self, velikost):
+            slovar_plosckov = {3: [10, 0], 4: [15, 0], 5: [21, 1], 6: [30, 1], 8: [50, 2]}
             self.velikost = velikost
+            self.ploscki = {'White': slovar_plosckov[velikost], 'Black': slovar_plosckov[velikost]}
             Polje = []
             for i in range(velikost):
                 Vrstica = []
@@ -14,7 +14,6 @@ class Igra:
                 Polje.append(Vrstica)
             self.polje = Polje
             self.povezave = []
-            self.backups = []
     
     def barva_polja(self, mesto):
         if self.polje[mesto[0]][mesto[1]]:
@@ -106,17 +105,8 @@ class Igra:
             elif 'levi' in robni and 'desni' in robni:
                 return (True, robni[0])
         return False
-            
-
-    
-    def undo(self):
-        if self.backups:
-            self.polje, self.povezave = self.backups[-1]
-        self.backups.pop(-1)
 
     def poteza(self, barva, mesto, ploscek):
-        a,b = copy.deepcopy(self.polje),copy.deepcopy(self.povezave)
-        self.backups.append((a,b))
         
         #validity test
         if max(mesto) - 1 > self.velikost:
@@ -150,6 +140,3 @@ class Igra:
             polje[-1] = polje[-1][:-1] + 'f'
         polje.append(barva + '_' + ploscek)
         self.update_povezave()
-a = Igra(3)
-a.poteza('w',(0,0),'w')
-a.poteza('w',(0,0),'c')
