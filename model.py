@@ -7,13 +7,14 @@ class Igra:
             self.velikost = velikost
             self.ploscki = {'White': slovar_plosckov[velikost], 'Black': slovar_plosckov[velikost]}
             Polje = []
-            for i in range(velikost):
+            for _ in range(velikost):
                 Vrstica = []
-                for j in range(velikost):
+                for _ in range(velikost):
                     Vrstica.append([])
                 Polje.append(Vrstica)
             self.polje = Polje
             self.povezave = []
+            self.now_playing = 'Black'
     
     def barva_polja(self, mesto):
         if self.polje[mesto[0]][mesto[1]]:
@@ -104,7 +105,32 @@ class Igra:
                 return (True, robni[0])
             elif 'levi' in robni and 'desni' in robni:
                 return (True, robni[0])
-        return False
+        
+        def prestej_polja():
+            crni = 0
+            beli = 0
+            for i in range(self.velikost):
+                for j in range(self.velikost):
+                    if self.barva_polja((i, j)) == 'w':
+                        beli += 1
+                    elif self.barva_polja((i, j)) == 'b':
+                        crni += 1
+            if crni > beli:
+                return (True, 'Black')
+            elif beli > crni:
+                return (True, 'White')
+            else:
+                return 'Tie'
+
+        if self.ploscki['White'] == (0, 0) or self.ploscki['Black'] == (0, 0):
+            prestej_polja()
+        
+        for i in range(self.velikost):
+                for j in range(self.velikost):
+                    if self.je_zasedeno((i, j)) is False:
+                        return False
+        prestej_polja()
+
 
     def poteza(self, barva, mesto, ploscek):
         
