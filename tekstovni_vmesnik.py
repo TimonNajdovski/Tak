@@ -219,6 +219,6 @@ def pozeni_igro():
         elif izbira == '5':
             switch_player()
             break
-    
+                
     print(izpis_konca_igre(igra))
 pozeni_igro()
